@@ -45,17 +45,20 @@ namespace Class_Layer
         /// Initializes an instance of the account class through its ID
         /// </summary>
         /// <param name="id">The ID of the user</param>
-        private Account(int id)
+        private static Account GetAccount(int id)
         {
+            Account acc = null;
             //Fetch Account from database
             DataTable AccountTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM ACC WHERE ID = " + id);
             foreach (DataRow AccountInformation in AccountTable.Rows)
             {
-                this.ID = Convert.ToInt32(AccountInformation["ID"]);
-                this.Name = AccountInformation["Name"].ToString();
-                this.IsOnline = AccountInformation["IsOnline"].ToString() == "0" ? false : true;
-                this.LastSeen = Convert.ToDateTime(AccountInformation["LastSeen"]);
+                acc = new Account(
+                    Convert.ToInt32(AccountInformation["ID"]),
+                    AccountInformation["Name"].ToString(),
+                    Convert.ToInt32(AccountInformation["IsOnline"]),
+                    Convert.ToDateTime(AccountInformation["LastSeen"]));
             }
+            return acc;
         }
 
         /// <summary>
@@ -118,9 +121,20 @@ namespace Class_Layer
         /// <returns>All the found users</returns>
         public static List<Account> GetList(int roomid)
         {
-            //TODO
-            //Call database to load in all the messages for this chatroomID
-            return null;
+            List<Account> AllAccounts = new List<Account>();
+            //Call database to load in all the users for this chatroomID
+            DataTable AllAccountsTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM ACC WHERE (SELECT UserID FROM CHATROOM WHERE ID = " + roomid + ")");
+            foreach (DataRow AccountInformation in AllAccountsTable.Rows)
+            {
+                //Create all the accounts for them
+                AllAccounts.Add(new Account(
+                    Convert.ToInt32(AccountInformation["ID"]),
+                    AccountInformation["Name"].ToString(),
+                    Convert.ToInt32(AccountInformation["IsOnline"]),
+                    Convert.ToDateTime(AccountInformation["LastSeen"])
+                ));
+            }
+            return AllAccounts;
         }
 
         /// <summary>
@@ -130,19 +144,42 @@ namespace Class_Layer
         /// <returns>The account after it's been verified</returns>
         private static Account Validate(int id)
         {
-            //TODO
+            Account ValidAccount = null;
             //Call database to check if user exists
-            //If exists: 
-            //Check if user matches
-            //Else:
-            //Insert new user into database
-            //If exists but does not match
-            //Update user into database
+            DataTable AccountTable = Database_Layer.Database.RetrieveQuery("SELECT \"ID\", \"Name\" FROM \"Acc\" WHERE \"ID\" = " + id);
+            foreach (DataRow AccountInformation in AccountTable.Rows)
+            {
+                int ID = Convert.ToInt32(AccountInformation["ID"]);
+                ValidAccount = GetAccount(ID);
+                //If no account was returned
+                if (ValidAccount == null)
+                {
+                    //Insert
+                    Database_Layer.ChatDatabase.InsertUser(
+                        Convert.ToInt32(AccountInformation["ID"]),
+                        AccountInformation["Name"].ToString(),
+                        false
+                        );
+                    //Set valid account to a real valid account
+                    ValidAccount = GetAccount(ID);
+                    break;
+                }
 
-            //Finally:
-            //Create an account instance
-            //Return this one
-            return null;
+                //If name is different
+                if (ValidAccount.Name != AccountInformation["Name"].ToString())
+                {
+                    //Update
+                    Database_Layer.ChatDatabase.UpdateUser(
+                        Convert.ToInt32(AccountInformation["ID"]),
+                        AccountInformation["Name"].ToString(),
+                        false
+                        );
+                    //Set valid account to a real valid account
+                    ValidAccount = GetAccount(ID);
+                    break;
+                }
+            }
+            return ValidAccount;
         }
     }
 }
