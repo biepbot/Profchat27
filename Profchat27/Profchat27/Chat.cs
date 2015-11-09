@@ -24,7 +24,7 @@ namespace Profchat27
         private string Lastchatname;
         private List<string> Lastchatusernames;
 
-        private List<Chatscreen> screens;
+        public List<Chatscreen> screens;
         //List<bool> userstati;
 
         public Chat(int id)
@@ -122,17 +122,14 @@ namespace Profchat27
 
         void BGWchatroom_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Chatscreen child = new Chatscreen(Admin, Lastchatusernames);
+            Chatscreen child = new Chatscreen(Admin, Lastchatusernames, this);
             child.Name = Lastchatname;
             child.Text = Lastchatname;
             screens.Add(child);
             child.Show();
 
             cbChatroom.Items.Clear();
-            foreach (Chatscreen c in screens)
-            {
-                cbChatroom.Items.Add(c.Name);
-            }
+            UpdateCB();
         }
 
         void BGWchatroom_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -148,6 +145,14 @@ namespace Profchat27
         }
 
         #endregion
+
+        public void UpdateCB()
+        {
+            foreach (Chatscreen c in screens)
+            {
+                cbChatroom.Items.Add(c.Name);
+            }
+        }
 
         /// <summary>
         /// Starts a chat with the selected person
@@ -196,9 +201,10 @@ namespace Profchat27
         {
             if (cbChatroom.SelectedIndex != -1)
             {
-                //TODO
-                //Administrator admintodostuff = ((Chatscreen)(this.MdiChildren.First(f => f.Name == cbChatroom.Text))).admin;
-                //admintodostuff.AddUser(lbContacts.SelectedIndex, cbChatroom.Text);
+                if (Admin.AddUser(lbContacts.SelectedIndex, cbChatroom.Text))
+                {
+                    MessageBox.Show("Je bent al toegevoegd aan dit gesprek!");
+                }
             }
         }
 

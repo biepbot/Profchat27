@@ -242,7 +242,7 @@
                 catch (OracleException e)
                 {
                     Console.WriteLine(e.Message);
-                    throw;
+                    throw new ArgumentException("User al toegevoegd aan deze kamer!");
                 }
                 c.Close();
             }

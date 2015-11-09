@@ -90,10 +90,16 @@ namespace Administration
         /// </summary>
         /// <param name="index">The index of the loaded user</param>
         /// <param name="chatname">The ID of the chat, aka the chatname</param>
-        public void AddUser(int index, string chatname)
+        /// <returns>Whether the main user is the same as the selected user</returns>
+        public bool AddUser(int index, string chatname)
         {
-            //Join room with user
-            Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
+            if (LoadedAccounts[index].ID != MainUser.ID)
+            {
+                //Join room with user
+                Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -245,7 +251,7 @@ namespace Administration
 
             foreach (Message m in added.OrderBy(msg => msg.SendDate))
             {
-                newmessages.Add(String.Format("<{0}> {1}: {2}", m.SendDate, m.Username, m.Text));
+                newmessages.Add(String.Format("<{0}> {1}: {2}", m.SendDate.ToString("HH:mm:ss"), m.Username, m.Text));
             }
             return changes;
         }

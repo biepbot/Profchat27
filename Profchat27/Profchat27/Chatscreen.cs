@@ -21,13 +21,15 @@ namespace Profchat27
         private bool closing;
         private List<string> usernames;
         private List<string> messages;
+        Form Previous;
 
-        public Chatscreen(Administrator a, List<string> users)
+        public Chatscreen(Administrator a, List<string> users, Form previous)
         {
             InitializeComponent();
             this.Admin = a;
             this.usernames = users;
             messages = new List<string>();
+            this.Previous = previous;
 
             //Check online users
             BGWuser = new BackgroundWorker();
@@ -140,6 +142,8 @@ namespace Profchat27
         private void Chatscreen_FormClosing(object sender, FormClosingEventArgs e)
         {
             closing = true;
+            ((Chat)Previous).screens.Remove(this);
+            ((Chat)Previous).UpdateCB();
             Admin.LeaveChat(this.Name);
         }
     }
