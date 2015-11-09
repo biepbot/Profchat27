@@ -12,6 +12,7 @@ namespace Administration
         private List<Chatroom> LoadedChatrooms;
         private List<Account> LoadedAccounts;
         public Account MainUser;
+        private Chatroom maintainedChatroom;
 
         public Administrator(int userID)
         {
@@ -44,9 +45,29 @@ namespace Administration
             Account.SetOffline(MainUser.ID);
         }
 
-        public void AddUser(int index)
+        public bool CheckOnline(int index)
         {
+            return LoadedAccounts[index].IsOnline;
+        }
 
+        public bool CreateChat(int index)
+        {
+            if (MainUser.ID != LoadedAccounts[index].ID)
+            {
+                //Create chat with main user and indexed user
+                Chatroom.CreateRoom(MainUser.ID, LoadedAccounts[index].ID);
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public void AddUser(int index, string chatname)
+        {
+            //Join room with user
+            Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
         }
 
         /// <summary>
@@ -127,14 +148,59 @@ namespace Administration
         /// Updates the chatroom list
         /// </summary>
         /// <returns>Whether there is a update to show or execute</returns>
-        public bool UpdateChatrooms()
+        public bool UpdateChatrooms(out string chatname, out List<string> usernames)
         {
+            bool changes = false;
+            chatname = "";
+            usernames = new List<string>();
+
             //Call chatroom for get list, compares this one with the current list
-            Chatroom.GetList(MainUser.ID, LoadedChatrooms);
-            //Upon difference: return true
-            //Else false
-            //In case of network failure, return null
-            return false;
+            List<Chatroom> newrooms = Chatroom.GetList(MainUser.ID, LoadedChatrooms);
+            //Look for rooms that are not open yet
+            foreach (Chatroom c in newrooms)
+            {
+
+                if (LoadedChatrooms.Count == 0)
+                {
+                    //Add chatroom
+                    LoadedChatrooms.Add(c);
+                    c.ScreenOpen = true;
+                    chatname = Convert.ToString(c.ID);
+                    usernames = c.Accountlist.Select(ca => ca.Name).ToList();
+
+                    changes = true;
+                    break;
+                }
+
+                //Search for similar chatroom by ID
+                Chatroom find = LoadedChatrooms.FirstOrDefault(cf => cf.ID == c.ID);
+
+                //if new chat
+                if (find == null)
+                {
+                    //Add chatroom
+                    LoadedChatrooms.Add(c);
+                    c.ScreenOpen = true;
+                    chatname = Convert.ToString(c.ID);
+                    usernames = c.Accountlist.Select(ca => ca.Name).ToList();
+
+                    changes = true;
+                    break;
+                }
+                //if not opened
+                if (!find.ScreenOpen)
+                {
+                    //Change chatroom to opened
+                    find.ScreenOpen = true;
+                    chatname = Convert.ToString(find.ID);
+                    usernames = find.Accountlist.Select(ca => ca.Name).ToList();
+
+                    changes = true;
+                    break;
+                }
+            }
+
+            return changes;
         }
     }
 }

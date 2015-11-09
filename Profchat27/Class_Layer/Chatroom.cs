@@ -33,6 +33,7 @@ namespace Class_Layer
         private Chatroom(int ID)
         {
             ScreenOpen = false;
+            this.ID = ID;
             //Load in all the users in this chatroom
             this.Accountlist = Account.GetList(ID);
             //Load in all the messages of this chatroom
@@ -77,6 +78,16 @@ namespace Class_Layer
             }
 
             return Chatrooms;
+        }
+
+        /// <summary>
+        /// Creates a room for both users
+        /// </summary>
+        /// <param name="userid1">User ID 1</param>
+        /// <param name="userid2">User ID 2</param>
+        public static void CreateRoom(int userid1, int userid2)
+        {
+            Database_Layer.ChatDatabase.CreateRoom(userid1, userid2);
         }
 
         /// <summary>

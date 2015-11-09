@@ -7,16 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Administration;
 
 namespace Profchat27
 {
     public partial class Chatscreen : Form
     {
-        public Administration.Administrator a;
+        public Administrator admin;
 
-        public Chatscreen()
+        public Chatscreen(Administrator a, List<string> users)
         {
             InitializeComponent();
+            this.admin = a;
         }
     }
 }

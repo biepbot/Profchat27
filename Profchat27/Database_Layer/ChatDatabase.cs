@@ -162,8 +162,8 @@
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
                 c.Open();
-                OracleCommand cmd = new OracleCommand("INSERT INTO Messages (UserID, ChatroomID, MessageBody) VALUES(:uid, :cid, :txt)");
-                cmd.Parameters.Add(new OracleParameter("uid", useridstr));
+                OracleCommand cmd = new OracleCommand("INSERT INTO Messages (UserID, ChatroomID, MessageBody) VALUES(:uud, :cid, :txt)");
+                cmd.Parameters.Add(new OracleParameter("uud", useridstr));
                 cmd.Parameters.Add(new OracleParameter("cid", chatroomidstr));
                 cmd.Parameters.Add(new OracleParameter("txt", text));
                 cmd.Connection = c;
@@ -181,6 +181,44 @@
         }
 
         /// <summary>
+        /// Creates a room for the two specified users
+        /// </summary>
+        /// <param name="userid">User ID 1</param>
+        /// <param name="userid2">User ID 2</param>
+        public static void CreateRoom(int userid, int userid2)
+        {
+            string useridstr = userid.ToString();
+
+            //Insert room
+            using (OracleConnection c = new OracleConnection(@connectionstring))
+            {
+                c.Open();
+                OracleCommand cmd = new OracleCommand("INSERT INTO Chatroom (UserID) VALUES (:uud)");
+                cmd.Parameters.Add(new OracleParameter("uud", useridstr));
+                cmd.Connection = c;
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (OracleException e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+                c.Close();
+            }
+            //retrieve room
+            DataTable dt = RetrieveQuery("SELECT MAX(ID) FROM Chatroom WHERE USERID = " + userid);
+            int idmax = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                idmax = Convert.ToInt32(row["MAX(ID)"]);
+            }
+            //AddToRoom
+            AddToRoom(idmax, userid2);
+        }
+
+        /// <summary>
         /// Creates a room with the user / adds a user to a room
         /// </summary>
         /// <param name="roomid">The ID of the room</param>
@@ -193,9 +231,9 @@
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
                 c.Open();
-                OracleCommand cmd = new OracleCommand("INSERT INTO Chatroom (ID, UserID) VALUES (:rid, :uid)");
+                OracleCommand cmd = new OracleCommand("INSERT INTO Chatroom (ID, UserID) VALUES (:rid, :uud)");
                 cmd.Parameters.Add(new OracleParameter("rid", roomidstr));
-                cmd.Parameters.Add(new OracleParameter("uid", useridstr));
+                cmd.Parameters.Add(new OracleParameter("uud", useridstr));
                 cmd.Connection = c;
                 try
                 {
@@ -223,9 +261,9 @@
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
                 c.Open();
-                OracleCommand cmd = new OracleCommand("DELETE Chatroom WHERE ID = :rid AND UserID = :uid");
+                OracleCommand cmd = new OracleCommand("DELETE Chatroom WHERE ID = :rid AND UserID = :uud");
                 cmd.Parameters.Add(new OracleParameter("rid", roomidstr));
-                cmd.Parameters.Add(new OracleParameter("uid", useridstr));
+                cmd.Parameters.Add(new OracleParameter("uud", useridstr));
                 cmd.Connection = c;
                 try
                 {
