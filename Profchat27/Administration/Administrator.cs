@@ -27,29 +27,49 @@ namespace Administration
             GoOnline();
         }
 
+        /// <summary>
+        /// Logs the main user in
+        /// </summary>
+        /// <param name="userID"></param>
         public void LogIn(int userID)
         {
             //Call account to get new main user
             MainUser = Account.GetMainUser(userID);
         }
 
+        /// <summary>
+        /// Sets the main user to online
+        /// </summary>
         public void GoOnline()
         {
             //Call account to set the main user online
             Account.SetOnline(MainUser.ID);
         }
 
+        /// <summary>
+        /// Sets the main user to offline
+        /// </summary>
         public void GoOffline()
         {
             //Call account to set the main user offline
             Account.SetOffline(MainUser.ID);
         }
 
+        /// <summary>
+        /// Checks if the user is online or not
+        /// </summary>
+        /// <param name="index">The index of the loaded user</param>
+        /// <returns></returns>
         public bool CheckOnline(int index)
         {
             return LoadedAccounts[index].IsOnline;
         }
 
+        /// <summary>
+        /// Creates a chat with both the user selected as well as the main user
+        /// </summary>
+        /// <param name="index">The index of the loaded user</param>
+        /// <returns>Whether the main user is the same as the selected user</returns>
         public bool CreateChat(int index)
         {
             if (MainUser.ID != LoadedAccounts[index].ID)
@@ -64,10 +84,25 @@ namespace Administration
             return true;
         }
 
+        /// <summary>
+        /// Adds a user to the chat
+        /// </summary>
+        /// <param name="index">The index of the loaded user</param>
+        /// <param name="chatname">The ID of the chat, aka the chatname</param>
         public void AddUser(int index, string chatname)
         {
             //Join room with user
             Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
+        }
+
+        /// <summary>
+        /// Sends a message to the database
+        /// </summary>
+        /// <param name="text">The text of the message</param>
+        /// <param name="roomid">The ID of the room</param>
+        public void SendMessage(string text, int roomid)
+        {
+            Message.Send(text.Trim(), roomid, MainUser.ID);
         }
 
         /// <summary>
@@ -125,6 +160,40 @@ namespace Administration
             };
             //userstati = LoadedAccounts.Select(c => c.IsOnline).ToList();
             return changed;
+        }
+
+        /// <summary>
+        /// Updates the user combo box
+        /// </summary>
+        /// <param name="room">the room name or ID, in int</param>
+        /// <param name="users"></param>
+        /// <returns>Whether there is a update to show or execute</returns>
+        public bool UpdateUsers(int room, out List<string> users)
+        {
+            bool changes = false;
+
+            //Get all the accounts
+            List<Account> accounts = Account.GetList(room);
+
+            Chatroom chat = LoadedChatrooms.Find(ch => ch.ID == room);
+
+            //compare to loaded in accounts
+            foreach (Account ac in accounts)
+            {
+                if (!chat.Accountlist.Contains(ac))
+                {
+                    changes = true;
+                }
+            }
+            if (changes)
+            {
+                users = accounts.Select(a => a.Name).ToList();
+            }
+            else
+            {
+                users = LoadedAccounts.Select(a => a.Name).ToList();
+            }
+            return changes;
         }
 
         /// <summary>

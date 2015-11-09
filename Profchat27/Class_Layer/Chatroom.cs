@@ -47,7 +47,6 @@ namespace Class_Layer
         /// <returns>All the found chatrooms</returns>
         public static List<Chatroom> GetList(int userid, List<Chatroom> loadedRooms)
         {
-            //TODO
             List<Chatroom> Chatrooms = loadedRooms;
             //Call database to load in all the chatrooms for this userID
             DataTable ChatroomTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM Chatroom WHERE UserID = " + userid);

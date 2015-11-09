@@ -123,7 +123,11 @@ namespace Class_Layer
         {
             List<Account> AllAccounts = new List<Account>();
             //Call database to load in all the users for this chatroomID
-            DataTable AllAccountsTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM ACC WHERE (SELECT UserID FROM CHATROOM WHERE ID = " + roomid + ")");
+            DataTable AllAccountsTable = Database_Layer.ChatDatabase.RetrieveQuery(
+                "SELECT * FROM Acc a " +
+                "JOIN Chatroom c " +
+                "ON c.UserID = a.ID " +
+                "WHERE c.ID = " + roomid);
             foreach (DataRow AccountInformation in AllAccountsTable.Rows)
             {
                 //Create all the accounts for them

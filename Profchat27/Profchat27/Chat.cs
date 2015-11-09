@@ -124,6 +124,7 @@ namespace Profchat27
         {
             Chatscreen child = new Chatscreen(Admin, Lastchatusernames);
             child.Name = Lastchatname;
+            child.Text = Lastchatname;
             screens.Add(child);
             child.Show();
 
