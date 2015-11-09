@@ -92,7 +92,24 @@ namespace Profchat27
         #region Background working for chatrooms
         void BGWchatroom_DoWork(object sender, DoWorkEventArgs e)
         {
-            throw new NotImplementedException();
+            //repeat every 500ms
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            users = new List<string>();
+            //userstati = new List<bool>();
+            if (Admin.UpdateChatrooms() == true)
+            {
+                BGWchatroom.ReportProgress(1);
+            }
+            sw.Stop();
+            if (sw.ElapsedMilliseconds < 501)
+            {
+                long time = sw.ElapsedMilliseconds;
+                while (time < 500 && !closing)
+                {
+                    time++;
+                }
+            }
         }
 
         void BGWchatroom_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -102,7 +119,14 @@ namespace Profchat27
 
         void BGWchatroom_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            //Check if app is closed
+            if (!closing)
+            {
+                if (!BGWchatroom.IsBusy)
+                {
+                    BGWchatroom.RunWorkerAsync();
+                }
+            }
         }
 
         #endregion

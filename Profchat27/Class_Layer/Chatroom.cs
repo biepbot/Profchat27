@@ -14,6 +14,10 @@ namespace Class_Layer
         /// </summary>
         public int ID { get; private set; }
         /// <summary>
+        /// Whether the chatroom form is opened or not
+        /// </summary>
+        public bool ScreenOpen { get; set; }
+        /// <summary>
         /// The list of users in this chatroom
         /// </summary>
         public List<Account> Accountlist { get; private set; }
@@ -28,6 +32,7 @@ namespace Class_Layer
         /// <param name="ID">The ID of the chatroom</param>
         private Chatroom(int ID)
         {
+            ScreenOpen = false;
             //Load in all the users in this chatroom
             this.Accountlist = Account.GetList(ID);
             //Load in all the messages of this chatroom
@@ -59,8 +64,6 @@ namespace Class_Layer
                 if (loadedRooms.FirstOrDefault(c => c.ID == id) == null)
                 {
                     Chatrooms.Add(new Chatroom(id));
-                    //Add user to room
-                    Database_Layer.ChatDatabase.AddToRoom(id, userid);
                 }
             }
 
@@ -70,12 +73,28 @@ namespace Class_Layer
                 if (ids.Select(i => i == c.ID) == null)
                 {
                     Chatrooms.Remove(c);
-                    //Remove user from room
-                    Database_Layer.ChatDatabase.RemoveFromRoom(c.ID, userid);
                 }
             }
 
             return Chatrooms;
+        }
+
+        /// <summary>
+        /// Adds the user to a room
+        /// </summary>
+        /// <param name="userid">The userID</param>
+        public static void JoinRoom(int userid, int roomid)
+        {
+            Database_Layer.ChatDatabase.AddToRoom(roomid, userid);
+        }
+
+        /// <summary>
+        /// Removes the user from a room
+        /// </summary>
+        /// <param name="userid"></param>
+        public static void LeaveRoom(int userid, int roomid)
+        {
+            Database_Layer.ChatDatabase.RemoveFromRoom(roomid, userid);
         }
     }
 }

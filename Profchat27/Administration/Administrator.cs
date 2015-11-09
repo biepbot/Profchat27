@@ -18,7 +18,7 @@ namespace Administration
             //Load in everything
             LoadedAccounts = new List<Account>();
             LogIn(userID);
-            LoadedChatrooms = Chatroom.GetList(MainUser.ID, new List<Chatroom>());
+            LoadedChatrooms = new List<Chatroom>();
             //Open chatrooms?
 
             //Go online
@@ -53,7 +53,7 @@ namespace Administration
         /// Updates the user list
         /// </summary>
         /// <param name="users"></param>
-        /// <returns></returns>
+        /// <returns>Whether there is a update to show or execute</returns>
         public bool UpdateUsers(out List<string> users/*, out List<bool> userstati*/)
         {
             //Call account for get list, compares this one with the current list
@@ -111,7 +111,7 @@ namespace Administration
         /// </summary>
         /// <param name="id"></param>
         /// <param name="newmessages"></param>
-        /// <returns></returns>
+        /// <returns>Whether there is a update to show or execute</returns>
         public bool UpdateMessages(int id, out List<string> newmessages)
         {
             //Move to chatroom?
@@ -126,16 +126,14 @@ namespace Administration
         /// <summary>
         /// Updates the chatroom list
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="newrooms"></param>
-        /// <returns></returns>
-        public bool UpdateChatrooms(int id, out List<int> newrooms)
+        /// <returns>Whether there is a update to show or execute</returns>
+        public bool UpdateChatrooms()
         {
             //Call chatroom for get list, compares this one with the current list
+            Chatroom.GetList(MainUser.ID, LoadedChatrooms);
             //Upon difference: return true
             //Else false
             //In case of network failure, return null
-            newrooms = null;
             return false;
         }
     }
