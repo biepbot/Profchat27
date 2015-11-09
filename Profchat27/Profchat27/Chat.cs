@@ -27,11 +27,11 @@ namespace Profchat27
         private List<Chatscreen> screens;
         //List<bool> userstati;
 
-        public Chat()
+        public Chat(int id)
         {
             InitializeComponent();
             screens = new List<Chatscreen>();
-            Admin = new Administrator(1);
+            Admin = new Administrator(id);
             //Check online users
             BGWuser = new BackgroundWorker();
             BGWuser.DoWork += BGWuser_DoWork;

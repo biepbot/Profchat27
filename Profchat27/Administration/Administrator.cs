@@ -11,8 +11,8 @@ namespace Administration
     {
         private List<Chatroom> LoadedChatrooms;
         private List<Account> LoadedAccounts;
+        private List<Message> LoadedMessages;
         public Account MainUser;
-        private Chatroom maintainedChatroom;
 
         public Administrator(int userID)
         {
@@ -20,6 +20,7 @@ namespace Administration
             LoadedAccounts = new List<Account>();
             LogIn(userID);
             LoadedChatrooms = new List<Chatroom>();
+            LoadedMessages = new List<Message>();
             //Open chatrooms?
 
             //Go online
@@ -93,6 +94,15 @@ namespace Administration
         {
             //Join room with user
             Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
+        }
+
+        /// <summary>
+        /// Leaves the specified chat
+        /// </summary>
+        /// <param name="chatname">The ID or name of the chat</param>
+        public void LeaveChat(string chatname)
+        {
+            Chatroom.LeaveRoom(MainUser.ID, Convert.ToInt32(chatname));
         }
 
         /// <summary>
@@ -204,13 +214,40 @@ namespace Administration
         /// <returns>Whether there is a update to show or execute</returns>
         public bool UpdateMessages(int id, out List<string> newmessages)
         {
-            //Move to chatroom?
+            bool changes = false;
+            newmessages = new List<string>();
             //Call messages for get list, compares this one with the current list
-            //Upon difference: return true
-            //Else false
-            //In case of network failure, return null
-            newmessages = null;
-            return false;
+            List<Message> newmsgs = Message.GetList(id);
+            List<Message> added = new List<Message>();
+
+            //Check if exists
+            foreach (Message m in newmsgs)
+            {
+                //If no messages exist
+                if (LoadedMessages.Count != 0)
+                {
+                    Message find = LoadedMessages.FirstOrDefault(msg => msg.ID == m.ID);
+                    //If message doesn't exist
+                    if (find == null)
+                    {
+                        LoadedMessages.Add(m);
+                        added.Add(m);
+                        changes = true;
+                    }
+                }
+                else
+                {
+                    LoadedMessages.Add(m);
+                    added.Add(m);
+                    changes = true;
+                }
+            }
+
+            foreach (Message m in added.OrderBy(msg => msg.SendDate))
+            {
+                newmessages.Add(String.Format("<{0}> {1}: {2}", m.SendDate, m.Username, m.Text));
+            }
+            return changes;
         }
 
         /// <summary>

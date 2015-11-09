@@ -12,11 +12,34 @@ namespace Profchat27
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        public static void Main(string[] args)
         {
+            string[] arguments = Environment.GetCommandLineArgs();
+
+            int id = 1;
+
+            foreach (string a in arguments)
+            {
+                if (IsDigitsOnly(a))
+                {
+                    int.TryParse(a, out id);
+                }
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Chat());
+            Application.Run(new Chat(id));
+        }
+
+        private static bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
         }
     }
 }

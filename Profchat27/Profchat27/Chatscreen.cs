@@ -17,14 +17,17 @@ namespace Profchat27
     {
         public Administrator Admin;
         BackgroundWorker BGWuser;
+        BackgroundWorker BGWmsg;
         private bool closing;
         private List<string> usernames;
+        private List<string> messages;
 
         public Chatscreen(Administrator a, List<string> users)
         {
             InitializeComponent();
             this.Admin = a;
             this.usernames = users;
+            messages = new List<string>();
 
             //Check online users
             BGWuser = new BackgroundWorker();
@@ -33,6 +36,13 @@ namespace Profchat27
             BGWuser.ProgressChanged += BGWuser_ProgressChanged;
             BGWuser.WorkerReportsProgress = true;
             BGWuser.RunWorkerAsync();
+
+            BGWmsg = new BackgroundWorker();
+            BGWmsg.DoWork += BGWmsg_DoWork;
+            BGWmsg.RunWorkerCompleted += BGWmsg_RunWorkerCompleted;
+            BGWmsg.ProgressChanged += BGWmsg_ProgressChanged;
+            BGWmsg.WorkerReportsProgress = true;
+            BGWmsg.RunWorkerAsync();
         }
 
         #region Background worker for chat users
@@ -77,14 +87,60 @@ namespace Profchat27
         }
         #endregion
 
+        #region Background worker for messages
+        private void BGWmsg_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //repeat every 500ms
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            if (Admin.UpdateMessages(Convert.ToInt32(this.Name), out messages) == true)
+            {
+                //In case of change, call function to show screen with users
+                BGWmsg.ReportProgress(1);
+            }
+            sw.Stop();
+            if (sw.ElapsedMilliseconds < 501)
+            {
+                long time = sw.ElapsedMilliseconds;
+                while (time < 500 && !closing)
+                {
+                    time++;
+                }
+            }
+        }
+
+        private void BGWmsg_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //AddMessage
+            foreach (string s in messages)
+            {
+                tbBerichten.AppendText(s + "\n");
+            }
+            
+        }
+
+        private void BGWmsg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (!closing)
+            {
+                if (!BGWmsg.IsBusy)
+                {
+                    BGWmsg.RunWorkerAsync();
+                }
+            }
+        }
+        #endregion
+
         private void btnSend_Click(object sender, EventArgs e)
         {
             Admin.SendMessage(tbMessage.Text, Convert.ToInt32(this.Name));
+            tbMessage.Clear();
         }
 
         private void Chatscreen_FormClosing(object sender, FormClosingEventArgs e)
         {
             closing = true;
+            Admin.LeaveChat(this.Name);
         }
     }
 }
