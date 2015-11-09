@@ -20,7 +20,7 @@ namespace Class_Layer
         /// <summary>
         /// The online status of the user as stated in the chat database
         /// </summary>
-        public bool IsOnline { get; private set; }
+        public bool IsOnline { get; set; }
 
         /// <summary>
         /// The last seen status of the user

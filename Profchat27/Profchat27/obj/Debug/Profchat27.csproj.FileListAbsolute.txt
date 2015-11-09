@@ -1,3 +1,19 @@
 C:\Users\Rowan\Documents\Visual Studio 2013\Projects\Profchat27\Profchat27\bin\Debug\Profchat27.exe.config
 C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Profchat27.exe.config
 C:\Users\Lars\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Profchat27.exe.config
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.csprojResolveAssemblyReference.cache
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.Chat.resources
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.Chatscreen.resources
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.Properties.Resources.resources
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.csproj.GenerateResource.Cache
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Profchat27.exe
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Profchat27.pdb
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Administration.dll
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Class_Layer.dll
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Database_Layer.dll
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Oracle.DataAccess.dll
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Administration.pdb
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Class_Layer.pdb
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Database_Layer.pdb
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.exe
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\obj\Debug\Profchat27.pdb

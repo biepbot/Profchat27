@@ -12,6 +12,8 @@ namespace Profchat27
 {
     public partial class Chatscreen : Form
     {
+        public Administration.Administrator a;
+
         public Chatscreen()
         {
             InitializeComponent();
