@@ -90,6 +90,40 @@
         }
 
         /// <summary>
+        /// Changes the status of a user
+        /// </summary>
+        /// <param name="id">The ID of the user</param>
+        /// <param name="namestr">The name of the user</param>
+        /// <param name="newvalue">The status of the user</param>
+        public static void ChangeUserStatus(int id, bool newvalue)
+        {
+            string idstr = id.ToString();
+            string newvaluestr = newvalue ? "1" : "0";
+
+            using (OracleConnection c = new OracleConnection(@connectionstring))
+            {
+                //TODO
+                //Add proper query
+                c.Open();
+                OracleCommand cmd = new OracleCommand("");
+                cmd.Parameters.Add(new OracleParameter("ids", idstr));
+                cmd.Parameters.Add(new OracleParameter("ion", newvaluestr));
+                cmd.Connection = c;
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (OracleException e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+
+                c.Close();
+            }
+        }
+
+        /// <summary>
         /// Inserts the user to the chatdatabase
         /// </summary>
         /// <param name="id">The ID of the user</param>

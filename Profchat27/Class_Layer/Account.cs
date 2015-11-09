@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,16 +23,22 @@ namespace Class_Layer
         public bool IsOnline { get; private set; }
 
         /// <summary>
+        /// The last seen status of the user
+        /// </summary>
+        public DateTime LastSeen { get; private set; }
+
+        /// <summary>
         /// Initializes an instance of the account class
         /// </summary>
         /// <param name="id">The ID of the user</param>
         /// <param name="name">The name of the user</param>
         /// <param name="isOnline">The online status of the user</param>
-        private Account(int id, string name, int isOnline)
+        private Account(int id, string name, int isOnline, DateTime lastseen)
         {
             this.ID = id;
             this.Name = name;
             this.IsOnline = isOnline == 0 ? false : true;
+            this.LastSeen = lastseen;
         }
 
         /// <summary>
@@ -40,8 +47,15 @@ namespace Class_Layer
         /// <param name="id">The ID of the user</param>
         private Account(int id)
         {
-            //TODO
             //Fetch Account from database
+            DataTable AccountTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM ACC WHERE ID = " + id);
+            foreach (DataRow AccountInformation in AccountTable.Rows)
+            {
+                this.ID = Convert.ToInt32(AccountInformation["ID"]);
+                this.Name = AccountInformation["Name"].ToString();
+                this.IsOnline = AccountInformation["IsOnline"].ToString() == "0" ? false : true;
+                this.LastSeen = Convert.ToDateTime(AccountInformation["LastSeen"]);
+            }
         }
 
         /// <summary>
@@ -61,8 +75,8 @@ namespace Class_Layer
         /// <param name="id">the ID of the user</param>
         public static void SetOnline(int id)
         {
-            //TODO
-            //Call database to set user online (updateaccount)
+            //Call database to set user online
+            Database_Layer.ChatDatabase.ChangeUserStatus(id, true);
         }
 
         /// <summary>
@@ -71,8 +85,8 @@ namespace Class_Layer
         /// <param name="id">the ID of the user</param>
         public static void SetOffline(int id)
         {
-            //TODO
-            //Call database to set user offline (updateaccount)
+            //Call database to set user offline
+            Database_Layer.ChatDatabase.ChangeUserStatus(id, false);
         }
 
         /// <summary>
@@ -81,10 +95,20 @@ namespace Class_Layer
         /// <returns>All the found users</returns>
         public static List<Account> GetList()
         {
-            //TODO
+            List<Account> AllAccounts = new List<Account>();
             //Call database for all the users
-            //Create all the accounts for them
-            return null;
+            DataTable AllAccountsTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM ACC");
+            foreach (DataRow AccountInformation in AllAccountsTable.Rows)
+            {
+                //Create all the accounts for them
+                AllAccounts.Add(new Account(
+                    Convert.ToInt32(AccountInformation["ID"]),
+                    AccountInformation["Name"].ToString(),
+                    Convert.ToInt32(AccountInformation["IsOnline"]),
+                    Convert.ToDateTime(AccountInformation["LastSeen"])
+                ));
+            }
+            return AllAccounts;
         }
 
         /// <summary>
