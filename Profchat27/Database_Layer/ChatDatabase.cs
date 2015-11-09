@@ -151,21 +151,18 @@
         /// <summary>
         /// Inserts a message to the chatdatabase
         /// </summary>
-        /// <param name="id">The ID of the message</param>
         /// <param name="userid">The ID of the user</param>
         /// <param name="chatroomid">The ID of the chatroom</param>
         /// <param name="text">The text of the message</param>
-        public static void InsertMessage(int id, int userid, int chatroomid, string text)
+        public static void InsertMessage(int userid, int chatroomid, string text)
         {
-            string idstr = id.ToString();
             string useridstr = userid.ToString();
             string chatroomidstr = chatroomid.ToString();
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
                 c.Open();
-                OracleCommand cmd = new OracleCommand("INSERT INTO Messages (ID, UserID, ChatroomID, MessageBody) VALUES(:mid, :uid, :cid, :txt)");
-                cmd.Parameters.Add(new OracleParameter("mid", idstr));
+                OracleCommand cmd = new OracleCommand("INSERT INTO Messages (UserID, ChatroomID, MessageBody) VALUES(:uid, :cid, :txt)");
                 cmd.Parameters.Add(new OracleParameter("uid", useridstr));
                 cmd.Parameters.Add(new OracleParameter("cid", chatroomidstr));
                 cmd.Parameters.Add(new OracleParameter("txt", text));
