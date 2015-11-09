@@ -67,13 +67,11 @@
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
-                //TODO
-                //Add proper query
                 c.Open();
-                OracleCommand cmd = new OracleCommand("");
-                cmd.Parameters.Add(new OracleParameter("ids", idstr));
+                OracleCommand cmd = new OracleCommand("UPDATE ACC SET Name = :nam, IsOnline = :ion WHERE ID = :ids");
                 cmd.Parameters.Add(new OracleParameter("nam", namestr));
                 cmd.Parameters.Add(new OracleParameter("ion", isOnlinestr));
+                cmd.Parameters.Add(new OracleParameter("ids", idstr));
                 cmd.Connection = c;
                 try
                 {
@@ -84,7 +82,6 @@
                     Console.WriteLine(e.Message);
                     throw;
                 }
-
                 c.Close();
             }
         }
@@ -93,7 +90,6 @@
         /// Changes the status of a user
         /// </summary>
         /// <param name="id">The ID of the user</param>
-        /// <param name="namestr">The name of the user</param>
         /// <param name="newvalue">The status of the user</param>
         public static void ChangeUserStatus(int id, bool newvalue)
         {
@@ -102,12 +98,10 @@
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
-                //TODO
-                //Add proper query
                 c.Open();
-                OracleCommand cmd = new OracleCommand("");
-                cmd.Parameters.Add(new OracleParameter("ids", idstr));
+                OracleCommand cmd = new OracleCommand("UPDATE ACC SET IsOnline = :ion WHERE ID = :ids");
                 cmd.Parameters.Add(new OracleParameter("ion", newvaluestr));
+                cmd.Parameters.Add(new OracleParameter("ids", idstr));
                 cmd.Connection = c;
                 try
                 {
@@ -118,7 +112,6 @@
                     Console.WriteLine(e.Message);
                     throw;
                 }
-
                 c.Close();
             }
         }
@@ -136,10 +129,8 @@
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
-                //TODO
-                //Add proper query
                 c.Open();
-                OracleCommand cmd = new OracleCommand("");
+                OracleCommand cmd = new OracleCommand("INSERT INTO ACC (ID, Name, IsOnline) VALUES (:ids, :nam, :ion)");
                 cmd.Parameters.Add(new OracleParameter("ids", idstr));
                 cmd.Parameters.Add(new OracleParameter("nam", namestr));
                 cmd.Parameters.Add(new OracleParameter("ion", isOnlinestr));
@@ -153,7 +144,6 @@
                     Console.WriteLine(e.Message);
                     throw;
                 }
-
                 c.Close();
             }
         }
@@ -173,10 +163,8 @@
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
-                //TODO
-                //Add proper query
                 c.Open();
-                OracleCommand cmd = new OracleCommand("");
+                OracleCommand cmd = new OracleCommand("INSERT INTO Messages (ID, UserID, ChatroomID, MessageBody) VALUES(:mid, :uid, :cid, :txt)");
                 cmd.Parameters.Add(new OracleParameter("mid", idstr));
                 cmd.Parameters.Add(new OracleParameter("uid", useridstr));
                 cmd.Parameters.Add(new OracleParameter("cid", chatroomidstr));
@@ -191,7 +179,6 @@
                     Console.WriteLine(e.Message);
                     throw;
                 }
-
                 c.Close();
             }
         }
@@ -208,10 +195,8 @@
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
-                //TODO
-                //Add proper query
                 c.Open();
-                OracleCommand cmd = new OracleCommand("");
+                OracleCommand cmd = new OracleCommand("INSERT INTO Chatroom (ID, UserID) VALUES (:rid, :uid)");
                 cmd.Parameters.Add(new OracleParameter("rid", roomidstr));
                 cmd.Parameters.Add(new OracleParameter("uid", useridstr));
                 cmd.Connection = c;
@@ -224,7 +209,6 @@
                     Console.WriteLine(e.Message);
                     throw;
                 }
-
                 c.Close();
             }
         }
@@ -241,10 +225,8 @@
 
             using (OracleConnection c = new OracleConnection(@connectionstring))
             {
-                //TODO
-                //Add proper query
                 c.Open();
-                OracleCommand cmd = new OracleCommand("");
+                OracleCommand cmd = new OracleCommand("DELETE Chatroom WHERE ID = :rid AND UserID = :uid");
                 cmd.Parameters.Add(new OracleParameter("rid", roomidstr));
                 cmd.Parameters.Add(new OracleParameter("uid", useridstr));
                 cmd.Connection = c;
@@ -257,7 +239,6 @@
                     Console.WriteLine(e.Message);
                     throw;
                 }
-
                 c.Close();
             }
         }
