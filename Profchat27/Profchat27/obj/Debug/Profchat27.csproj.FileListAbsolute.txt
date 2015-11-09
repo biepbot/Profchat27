@@ -1,0 +1,2 @@
+C:\Users\Rowan\Documents\Visual Studio 2013\Projects\Profchat27\Profchat27\bin\Debug\Profchat27.exe.config
+C:\Users\Rowan\Source\Repos\Profchat27\Profchat27\Profchat27\bin\Debug\Profchat27.exe.config
