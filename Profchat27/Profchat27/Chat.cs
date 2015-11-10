@@ -23,6 +23,7 @@ namespace Profchat27
 
         private string Lastchatname;
         private List<string> Lastchatusernames;
+        private List<string> closedChats;
 
         public List<Chatscreen> screens;
         //List<bool> userstati;
@@ -47,6 +48,7 @@ namespace Profchat27
             BGWchatroom.ProgressChanged += BGWchatroom_ProgressChanged;
             BGWchatroom.WorkerReportsProgress = true;
             BGWchatroom.RunWorkerAsync();
+
         }
 
         #region Background working for users
@@ -103,7 +105,8 @@ namespace Profchat27
             sw.Start();
             Lastchatname = "";
             Lastchatusernames = new List<string>();
-            if (Admin.UpdateChatrooms(out Lastchatname, out Lastchatusernames) == true)
+            closedChats = new List<string>();
+            if (Admin.UpdateChatrooms(out Lastchatname, out Lastchatusernames, out closedChats) == true)
             {
                 //In case of change, call function to show screen with users
                 BGWchatroom.ReportProgress(1);
@@ -124,6 +127,13 @@ namespace Profchat27
             child.Text = Lastchatname;
             screens.Add(child);
             child.Show();
+
+            foreach (string s in closedChats)
+            {
+                screens.Remove(
+                    screens.FirstOrDefault(c => c.Name == s)
+                    );
+            }
 
             cbChatroom.Items.Clear();
             UpdateCB();

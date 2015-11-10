@@ -260,18 +260,19 @@ namespace Administration
         /// Updates the chatroom list
         /// </summary>
         /// <returns>Whether there is a update to show or execute</returns>
-        public bool UpdateChatrooms(out string chatname, out List<string> usernames)
+        public bool UpdateChatrooms(out string chatname, out List<string> usernames, out List<string> closedApps)
         {
             bool changes = false;
             chatname = "";
             usernames = new List<string>();
+            closedApps = new List<string>();
 
             //Call chatroom for get list, compares this one with the current list
             List<Chatroom> newrooms = Chatroom.GetList(MainUser.ID, LoadedChatrooms);
             //Look for rooms that are not open yet
+            #region find new
             foreach (Chatroom c in newrooms)
             {
-
                 if (LoadedChatrooms.Count == 0)
                 {
                     //Add chatroom
@@ -311,6 +312,21 @@ namespace Administration
                     break;
                 }
             }
+            #endregion
+
+            //Look for rooms that are closed
+            #region find removed
+            foreach (Chatroom c in LoadedChatrooms)
+            {
+                Chatroom find = newrooms.FirstOrDefault(chat => chat.ID == c.ID);
+                if (find == null)
+                {
+                    //If no room is found in the new list, remove the loaded room
+                    LoadedChatrooms.Remove(c);
+                    closedApps.Add(c.ID.ToString());
+                }
+            }
+            #endregion
 
             return changes;
         }

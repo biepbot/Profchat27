@@ -139,8 +139,6 @@ namespace Profchat27
         private void Chatscreen_FormClosing(object sender, FormClosingEventArgs e)
         {
             closing = true;
-            ((Chat)Previous).screens.Remove(this);
-            ((Chat)Previous).UpdateCB();
             Admin.LeaveChat(this.Name);
         }
 
