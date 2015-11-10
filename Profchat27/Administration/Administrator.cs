@@ -14,28 +14,23 @@ namespace Administration
         private List<Message> LoadedMessages;
         public Account MainUser;
 
-        public Administrator(int userID)
+        public Administrator()
         {
             //Load in everything
             LoadedAccounts = new List<Account>();
-            LogIn(userID);
             LoadedChatrooms = new List<Chatroom>();
             LoadedMessages = new List<Message>();
-            //Open chatrooms?
-
-            //Go online
-            LogIn(MainUser.ID);
-            GoOnline();
         }
 
         /// <summary>
         /// Logs the main user in
         /// </summary>
         /// <param name="userID"></param>
-        public void LogIn(int userID)
+        public string LogIn(int userID)
         {
             //Call account to get new main user
             MainUser = Account.GetMainUser(userID);
+            return MainUser.Name;
         }
 
         /// <summary>

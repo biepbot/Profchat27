@@ -32,7 +32,9 @@ namespace Profchat27
         {
             InitializeComponent();
             screens = new List<Chatscreen>();
-            Admin = new Administrator(id);
+            Admin = new Administrator();
+            lblName.Text = Admin.LogIn(id);
+
             //Check online users
             BGWuser = new BackgroundWorker();
             BGWuser.DoWork += BGWuser_DoWork;
@@ -40,6 +42,8 @@ namespace Profchat27
             BGWuser.ProgressChanged += BGWuser_ProgressChanged;
             BGWuser.WorkerReportsProgress = true;
             BGWuser.RunWorkerAsync();
+
+            Admin.GoOnline();
 
             //Check active chats
             BGWchatroom = new BackgroundWorker();
@@ -155,10 +159,12 @@ namespace Profchat27
 
         public void UpdateCB()
         {
+            int i = cbChatroom.SelectedIndex;
             foreach (Chatscreen c in screens)
             {
                 cbChatroom.Items.Add(c.Name);
             }
+            cbChatroom.SelectedIndex = i;
         }
 
         /// <summary>
@@ -186,6 +192,7 @@ namespace Profchat27
         /// <param name="users"></param>
         void UpdateListbox(List<string> users/*, List<bool> userstati*/)
         {
+            int i = lbContacts.SelectedIndex;
             //Refresh to new users
             lbContacts.DataSource = null;
             lbContacts.DataSource = users;
@@ -197,6 +204,7 @@ namespace Profchat27
                 lbContacts.ForeColor = b ? Color.ForestGreen : Color.Maroon;
             }
             */
+            lbContacts.SelectedIndex = i;
         }
 
         /// <summary>
