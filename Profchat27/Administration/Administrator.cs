@@ -68,6 +68,7 @@ namespace Administration
         /// <returns>Whether the main user is the same as the selected user</returns>
         public bool CreateChat(int index)
         {
+            //If not with yourself
             if (MainUser.ID != LoadedAccounts[index].ID)
             {
                 //Create chat with main user and indexed user
@@ -85,16 +86,23 @@ namespace Administration
         /// </summary>
         /// <param name="index">The index of the loaded user</param>
         /// <param name="chatname">The ID of the chat, aka the chatname</param>
-        /// <returns>Whether the main user is the same as the selected user</returns>
-        public bool AddUser(int index, string chatname)
+        /// <returns>Whether it succeeded or not</returns>
+        public bool AddUser(int index, string chatname, out string error)
         {
-            if (LoadedAccounts[index].ID != MainUser.ID)
+            error = string.Empty;
+            if (LoadedAccounts[index].IsOnline)
             {
-                //Join room with user
-                Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
+                if (LoadedAccounts[index].ID != MainUser.ID)
+                {
+                    //Join room with user
+                    Chatroom.JoinRoom(LoadedAccounts[index].ID, Convert.ToInt32(chatname));
+                    return true;
+                }
+                error = "Je kan geen gesprek met jezelf starten!";
                 return false;
             }
-            return true;
+            error = "De gebruiker is niet online!";
+            return false;
         }
 
         /// <summary>

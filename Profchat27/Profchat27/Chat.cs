@@ -214,12 +214,17 @@ namespace Profchat27
         /// <param name="e"></param>
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (cbChatroom.SelectedIndex != -1)
+            string error = string.Empty;
+            if (cbChatroom.SelectedIndex != -1 && lbContacts.SelectedIndex != -1)
             {
-                if (Admin.AddUser(lbContacts.SelectedIndex, cbChatroom.Text))
+                if (Admin.AddUser(lbContacts.SelectedIndex, cbChatroom.Text, out error))
                 {
-                    MessageBox.Show("Je bent al toegevoegd aan dit gesprek!");
+                    MessageBox.Show(error);
                 }
+            }
+            else
+            {
+                MessageBox.Show("Selecteer een gebruiker en chatroom om deze gebruiker aan toe te voegen.");
             }
         }
 
