@@ -126,12 +126,14 @@ namespace Profchat27
 
         void BGWchatroom_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Chatscreen child = new Chatscreen(Admin, Lastchatusernames, this);
-            child.Name = Lastchatname;
-            child.Text = Lastchatname;
-            screens.Add(child);
-            child.Show();
-
+            if (!String.IsNullOrWhiteSpace(Lastchatname))
+            {
+                Chatscreen child = new Chatscreen(Admin, Lastchatusernames, this);
+                child.Name = Lastchatname;
+                child.Text = Lastchatname;
+                screens.Add(child);
+                child.Show();
+            }
             foreach (string s in closedChats)
             {
                 screens.Remove(

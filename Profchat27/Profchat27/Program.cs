@@ -16,7 +16,7 @@ namespace Profchat27
         {
             string[] arguments = Environment.GetCommandLineArgs();
 
-            int id = 2;
+            int id = 0;
 
             foreach (string a in arguments)
             {
@@ -25,10 +25,16 @@ namespace Profchat27
                     int.TryParse(a, out id);
                 }
             }
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Chat(id));
+            if (id != 0)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Chat(id));
+            }
+            else
+            {
+                Console.WriteLine("Application can not be run with these settings, it must be run through the main app!");
+            }
         }
 
         private static bool IsDigitsOnly(string str)

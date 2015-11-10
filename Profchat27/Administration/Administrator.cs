@@ -269,69 +269,30 @@ namespace Administration
             chatname = "";
             usernames = new List<string>();
             closedApps = new List<string>();
+            List<Chatroom> added;
+            List<Chatroom> removed;
 
             //Call chatroom for get list, compares this one with the current list
-            List<Chatroom> newrooms = Chatroom.GetList(MainUser.ID, LoadedChatrooms);
-            //Look for rooms that are closed
-            #region find removed
-            foreach (Chatroom c in LoadedChatrooms)
+            bool roomsChanged = Chatroom.GetList(MainUser.ID, LoadedChatrooms, out added, out removed);
+            if (roomsChanged)
             {
-                Chatroom find = newrooms.FirstOrDefault(chat => chat.ID == c.ID);
-                if (find == null)
+                //Add joined rooms
+                foreach (Chatroom c in added)
                 {
-                    //If the loaded room is not found in the new list, remove the loaded room
+                    LoadedChatrooms.Add(c);
+                    chatname = c.ID.ToString();
+                    usernames = c.Accountlist.Select(a => a.Name).ToList();
+                    break;
+                }
+
+                //Remove left rooms
+                foreach (Chatroom c in removed)
+                {
                     LoadedChatrooms.Remove(c);
                     closedApps.Add(c.ID.ToString());
-                    changes = true;
                 }
+                changes = true;
             }
-            #endregion
-
-            //Look for rooms that are not open yet
-            #region find new
-            foreach (Chatroom c in newrooms)
-            {
-                if (LoadedChatrooms.Count == 0)
-                {
-                    //Add chatroom
-                    LoadedChatrooms.Add(c);
-                    c.ScreenOpen = true;
-                    chatname = Convert.ToString(c.ID);
-                    usernames = c.Accountlist.Select(ca => ca.Name).ToList();
-
-                    changes = true;
-                    break;
-                }
-
-                //Search for similar chatroom by ID
-                Chatroom find = LoadedChatrooms.FirstOrDefault(cf => cf.ID == c.ID);
-
-                //if new chat
-                if (find == null)
-                {
-                    //Add chatroom
-                    LoadedChatrooms.Add(c);
-                    c.ScreenOpen = true;
-                    chatname = Convert.ToString(c.ID);
-                    usernames = c.Accountlist.Select(ca => ca.Name).ToList();
-
-                    changes = true;
-                    break;
-                }
-                //if not opened
-                if (!find.ScreenOpen)
-                {
-                    //Change chatroom to opened
-                    find.ScreenOpen = true;
-                    chatname = Convert.ToString(find.ID);
-                    usernames = find.Accountlist.Select(ca => ca.Name).ToList();
-
-                    changes = true;
-                    break;
-                }
-            }
-            #endregion
-
 
             return changes;
         }

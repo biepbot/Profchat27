@@ -45,9 +45,11 @@ namespace Class_Layer
         /// </summary>
         /// <param name="userid">the ID of the user</param>
         /// <returns>All the found chatrooms</returns>
-        public static List<Chatroom> GetList(int userid, List<Chatroom> loadedRooms)
+        public static bool GetList(int userid, List<Chatroom> loadedRooms, out List<Chatroom> added, out List<Chatroom> removed)
         {
             List<Chatroom> Chatrooms = loadedRooms;
+            added = new List<Chatroom>();
+            removed = new List<Chatroom>();
             //Call database to load in all the chatrooms for this userID
             DataTable ChatroomTable = Database_Layer.ChatDatabase.RetrieveQuery("SELECT * FROM Chatroom WHERE UserID = " + userid);
 
@@ -63,7 +65,8 @@ namespace Class_Layer
             {
                 if (loadedRooms.FirstOrDefault(c => c.ID == id) == null)
                 {
-                    Chatrooms.Add(new Chatroom(id));
+                    Chatroom add = new Chatroom(id);
+                    added.Add(add);
                 }
             }
             List<int> deleteIDs = new List<int>();
@@ -74,17 +77,11 @@ namespace Class_Layer
                 if (ids.FirstOrDefault(i => i == c.ID) == 0)
                 {
                     deleteIDs.Add(c.ID);
+                    removed.Add(c);
                 }
             }
-            //Delete the not found chatroom
-            foreach (int id in deleteIDs)
-            {
-                Chatrooms.Remove(
-                    Chatrooms.FirstOrDefault(c => c.ID == id)
-                    );
-            }
 
-            return Chatrooms;
+            return (added.Count != 0 || removed.Count != 0);
         }
 
         /// <summary>
