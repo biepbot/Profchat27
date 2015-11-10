@@ -60,13 +60,10 @@ namespace Profchat27
                 BGWuser.ReportProgress(1);
             }
             sw.Stop();
-            if (sw.ElapsedMilliseconds < 501)
+            long time = sw.ElapsedMilliseconds;
+            if (time < 501)
             {
-                long time = sw.ElapsedMilliseconds;
-                while (time < 500 && !closing)
-                {
-                    time++;
-                }
+                Thread.Sleep((501 - Convert.ToInt32(time)));
             }
         }
 
@@ -101,13 +98,10 @@ namespace Profchat27
                 BGWmsg.ReportProgress(1);
             }
             sw.Stop();
-            if (sw.ElapsedMilliseconds < 501)
+            long time = sw.ElapsedMilliseconds;
+            if (time < 501)
             {
-                long time = sw.ElapsedMilliseconds;
-                while (time < 500 && !closing)
-                {
-                    time++;
-                }
+                Thread.Sleep((501 - Convert.ToInt32(time)));
             }
         }
 
@@ -118,7 +112,7 @@ namespace Profchat27
             {
                 tbBerichten.AppendText(s + "\n");
             }
-            
+
         }
 
         private void BGWmsg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -135,8 +129,11 @@ namespace Profchat27
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            Admin.SendMessage(tbMessage.Text, Convert.ToInt32(this.Name));
-            tbMessage.Clear();
+            if (!String.IsNullOrWhiteSpace(tbMessage.Text))
+            {
+                Admin.SendMessage(tbMessage.Text, Convert.ToInt32(this.Name));
+                tbMessage.Clear();
+            }
         }
 
         private void Chatscreen_FormClosing(object sender, FormClosingEventArgs e)
@@ -145,6 +142,14 @@ namespace Profchat27
             ((Chat)Previous).screens.Remove(this);
             ((Chat)Previous).UpdateCB();
             Admin.LeaveChat(this.Name);
+        }
+
+        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnSend.PerformClick();
+            }
         }
     }
 }

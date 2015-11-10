@@ -63,17 +63,16 @@ namespace Profchat27
                 BGWuser.ReportProgress(1);
             }
             sw.Stop();
-            if (sw.ElapsedMilliseconds < 501)
+            long time = sw.ElapsedMilliseconds;
+            if (time < 501)
             {
-                long time = sw.ElapsedMilliseconds;
-                while (time < 500 && !closing)
-                {
-                    time++;
-                }
+                Thread.Sleep((501 - Convert.ToInt32(time)));
             }
             if (sw.ElapsedMilliseconds > 3000)
             {
-                MessageBox.Show("De verbinding is te traag, chat wordt gedisconnect!");
+                MessageBox.Show("De verbinding is te traag! \nMogelijk hebt u uw netwerkverbinding verloren.");
+                //TODO
+                //Do stuff like, disconnecting
             }
 
         }
@@ -110,14 +109,12 @@ namespace Profchat27
                 BGWchatroom.ReportProgress(1);
             }
             sw.Stop();
-            if (sw.ElapsedMilliseconds < 501)
+            long time = sw.ElapsedMilliseconds;
+            if (time < 501)
             {
-                long time = sw.ElapsedMilliseconds;
-                while (time < 500 && !closing)
-                {
-                    time++;
-                }
+                Thread.Sleep((501 - Convert.ToInt32(time)));
             }
+            sw.Stop();
         }
 
         void BGWchatroom_ProgressChanged(object sender, ProgressChangedEventArgs e)

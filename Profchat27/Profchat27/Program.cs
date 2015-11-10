@@ -16,7 +16,7 @@ namespace Profchat27
         {
             string[] arguments = Environment.GetCommandLineArgs();
 
-            int id = 1;
+            int id = 2;
 
             foreach (string a in arguments)
             {
