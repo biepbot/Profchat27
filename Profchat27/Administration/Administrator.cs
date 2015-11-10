@@ -272,6 +272,21 @@ namespace Administration
 
             //Call chatroom for get list, compares this one with the current list
             List<Chatroom> newrooms = Chatroom.GetList(MainUser.ID, LoadedChatrooms);
+            //Look for rooms that are closed
+            #region find removed
+            foreach (Chatroom c in LoadedChatrooms)
+            {
+                Chatroom find = newrooms.FirstOrDefault(chat => chat.ID == c.ID);
+                if (find == null)
+                {
+                    //If the loaded room is not found in the new list, remove the loaded room
+                    LoadedChatrooms.Remove(c);
+                    closedApps.Add(c.ID.ToString());
+                    changes = true;
+                }
+            }
+            #endregion
+
             //Look for rooms that are not open yet
             #region find new
             foreach (Chatroom c in newrooms)
@@ -317,19 +332,6 @@ namespace Administration
             }
             #endregion
 
-            //Look for rooms that are closed
-            #region find removed
-            foreach (Chatroom c in LoadedChatrooms)
-            {
-                Chatroom find = newrooms.FirstOrDefault(chat => chat.ID == c.ID);
-                if (find == null)
-                {
-                    //If no room is found in the new list, remove the loaded room
-                    LoadedChatrooms.Remove(c);
-                    closedApps.Add(c.ID.ToString());
-                }
-            }
-            #endregion
 
             return changes;
         }

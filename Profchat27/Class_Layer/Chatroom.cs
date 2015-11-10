@@ -66,14 +66,22 @@ namespace Class_Layer
                     Chatrooms.Add(new Chatroom(id));
                 }
             }
+            List<int> deleteIDs = new List<int>();
 
             //Compare the ID's, remove a chatroom when an id in 'ids' is not found
             foreach (Chatroom c in loadedRooms)
             {
-                if (ids.Select(i => i == c.ID) == null)
+                if (ids.FirstOrDefault(i => i == c.ID) == 0)
                 {
-                    Chatrooms.Remove(c);
+                    deleteIDs.Add(c.ID);
                 }
+            }
+            //Delete the not found chatroom
+            foreach (int id in deleteIDs)
+            {
+                Chatrooms.Remove(
+                    Chatrooms.FirstOrDefault(c => c.ID == id)
+                    );
             }
 
             return Chatrooms;

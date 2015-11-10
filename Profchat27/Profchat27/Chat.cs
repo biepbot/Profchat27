@@ -217,7 +217,7 @@ namespace Profchat27
             string error = string.Empty;
             if (cbChatroom.SelectedIndex != -1 && lbContacts.SelectedIndex != -1)
             {
-                if (Admin.AddUser(lbContacts.SelectedIndex, cbChatroom.Text, out error))
+                if (!Admin.AddUser(lbContacts.SelectedIndex, cbChatroom.Text, out error))
                 {
                     MessageBox.Show(error);
                 }
